@@ -15,14 +15,12 @@ public class CustomerController {
 
     private CustomerService customerService;
     private ConverterCustomerToDto converterCustomerToCustomerDTO;
-    private ConverterRequestToCustomer requestDtoToCustomer;
+
 
     public CustomerController(CustomerService customerService,
-                              ConverterCustomerToDto toCustomerDTO,
-                              ConverterRequestToCustomer requestDtoToCustomer) {
+                              ConverterCustomerToDto toCustomerDTO) {
         this.customerService = customerService;
         this.converterCustomerToCustomerDTO = toCustomerDTO;
-        this.requestDtoToCustomer = requestDtoToCustomer;
     }
 
     @GetMapping()
@@ -32,11 +30,4 @@ public class CustomerController {
         return new Result(true, StatusCode.SUCCESS, "Find All Success", customersResponse);
     }
 
-    @PostMapping()
-    public Result addCustomer(@RequestBody CustomerRequest customerRequest) {
-        var newCustomer =  customerService.createNewCustomer(requestDtoToCustomer.convert(customerRequest));
-        var customerResponse = converterCustomerToCustomerDTO.convert(newCustomer);
-        return new Result(true, StatusCode.SUCCESS, "Save Success", customerResponse);
-
-    }
 }

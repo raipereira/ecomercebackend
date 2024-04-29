@@ -11,6 +11,7 @@ import raiper.miu.cs489.service.OrderService;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -52,5 +53,10 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDetails(Collections.singletonList(orderDetail));
 
        orderRepository.save(order);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 }

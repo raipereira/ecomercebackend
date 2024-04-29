@@ -1,5 +1,6 @@
 package raiper.miu.cs489.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import raiper.miu.cs489.model.Customer;
 import raiper.miu.cs489.model.Role;
@@ -16,42 +17,16 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
-    public CustomerServiceImpl(CustomerRepository customerRepository,
-                               RoleRepository roleRepository,
-                               UserRepository userRepository) {
+
+    public CustomerServiceImpl(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
     }
+
 
     @Override
     public List<Customer> findAllCustomers() {
         return this.customerRepository.findAll();
     }
 
-    @Override
-    public Customer createNewCustomer(Customer customer) {
 
-        List<Role> listAdminRoles = new ArrayList<>();
-        var adminRole = roleRepository.findByRole("ROLE_CUSTOMER");
-        if(adminRole.isEmpty()) {
-            var newAdminRole = Role.builder().role("ROLE_CUSTOMER").build();
-            listAdminRoles.add(newAdminRole);
-        } else {
-            listAdminRoles.add(adminRole.get());
-        }
-        var user = customer.getUser();
-        user.setRoles(listAdminRoles);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setCustomer(customer);
-
-        user = this.userRepository.save(user);
-
-        return user.getCustomer();
-    }
 }
