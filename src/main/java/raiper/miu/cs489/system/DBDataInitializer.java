@@ -3,6 +3,7 @@ package raiper.miu.cs489.system;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import raiper.miu.cs489.model.*;
 import raiper.miu.cs489.repository.*;
@@ -26,12 +27,14 @@ public class DBDataInitializer {
     private OrderRepository orderRepository;
     private ShipperRepository shipperRepository;
     private PaymentRepository paymentRepository;
+    private PasswordEncoder passwordEncoder;
     DBDataInitializer(CustomerRepository customerRepository, UserRepository userRepository,
                       RoleRepository roleRepository,
                       ProductRepository productRepository,
                       OrderRepository orderRepository,
                       ShipperRepository shipperRepository,
-                      PaymentRepository paymentRepository) {
+                      PaymentRepository paymentRepository,
+                      PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -39,6 +42,7 @@ public class DBDataInitializer {
         this.orderRepository = orderRepository;
         this.shipperRepository = shipperRepository;
         this.paymentRepository = paymentRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -68,14 +72,13 @@ public class DBDataInitializer {
             var userAdmin = User.builder()
                     .username("admin")
                     .email("admin@admin.com")
-                    .password("test123")
+                    .password(passwordEncoder.encode("test123"))
                     .customer(customerAdmin)
                     .credentialsNonExpired(true)
                     .enabled(true)
                     .accountNonExpired(true)
                     .accountNonLocked(true)
                     .roles(listAdminRoles).build();
-                   // passwordEncoder.encode("test1234"), "admin@fairfieldlibrary.com",
             userAdmin.setRoles(listAdminRoles);
             userRepository.save(userAdmin);
         }
@@ -110,11 +113,11 @@ public class DBDataInitializer {
                     .address(address1)
                     .build();
 
-            var newCustomerRoles = Arrays.asList(Role.builder().role("ROLE_CUSTOMER").build());
+            var newCustomerRoles = Arrays.asList(Role.builder().role("ROLE_USER").build());
             var customerUser = User.builder()
                     .username("John")
                     .email("John@john.com")
-                    .password("test123")
+                    .password(passwordEncoder.encode("test123"))
                     .customer(customer1)
                     .credentialsNonExpired(true)
                     .enabled(true)

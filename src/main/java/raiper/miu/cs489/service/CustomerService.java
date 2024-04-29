@@ -8,6 +8,4 @@ public interface CustomerService {
 
     List<Customer> findAllCustomers();
 
-
-    Customer createNewCustomer(Customer customer);
 }
